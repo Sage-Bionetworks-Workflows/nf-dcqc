@@ -4,7 +4,7 @@ process CREATE_PROCESS {
     label 'dcqc'
 
     input:
-    tuple val(target_id), path(test_json), path(staged_file)
+    tuple val(target_id), path(test_json), path(staged_file, stageAs: "staged/*")
 
     output:
     tuple val(target_id), path(test_json), path(staged_file), path("${test_json.baseName}.process.json")

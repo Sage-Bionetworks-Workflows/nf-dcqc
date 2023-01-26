@@ -4,7 +4,7 @@ process COMPUTE_TEST {
     label 'dcqc'
 
     input:
-    tuple val(target_id), path(test_json), path(staged_file), path("std_out.txt"), path("std_err.txt"), path("exit_code.txt")
+    tuple val(target_id), path(test_json), path(staged_file, stageAs: "staged/*"), path("std_out.txt"), path("std_err.txt"), path("exit_code.txt")
 
     output:
     tuple val(target_id), path("${test_json.baseName}.computed.json")

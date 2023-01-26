@@ -14,6 +14,6 @@ process STAGE_TARGET {
 
     script:
     """
-    dcqc stage-target "${target_json}" "${target_json.baseName}.staged.json" staged/
+    dcqc stage-target --paths-relative-to ./ "${target_json}" "${target_json.baseName}.staged.json" staged/
     """
 }

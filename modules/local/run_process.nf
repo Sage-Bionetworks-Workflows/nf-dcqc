@@ -5,7 +5,7 @@ process RUN_PROCESS {
     memory "${memory}"
 
     input:
-    tuple val(target_id), path(test_json), path(staged_file), val(container), val(cpus), val(memory), val(command)
+    tuple val(target_id), path(test_json), path(staged_file, stageAs: "staged/*"), val(container), val(cpus), val(memory), val(command)
 
     output:
     tuple val(target_id), path(test_json), path(staged_file), path("std_out.txt"), path("std_err.txt"), path("exit_code.txt")
