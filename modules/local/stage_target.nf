@@ -7,13 +7,13 @@ process STAGE_TARGET {
     tuple val(target_id), path(target_json)
 
     output:
-    tuple val(target_id), path(target_json), path("staged/*")
+    tuple val(target_id), path("${test_json.baseName}.staged.json"), path("staged/*")
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
-    dcqc stage-target "${target_json}" staged/
+    dcqc stage-target "${target_json}" "${test_json.baseName}.staged.json" staged/
     """
 }
