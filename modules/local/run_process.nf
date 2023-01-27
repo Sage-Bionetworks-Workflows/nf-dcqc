@@ -3,7 +3,6 @@ process RUN_PROCESS {
     cpus "${cpus}"
     memory "${memory}"
     container "${container}"
-    containerOptions '--entrypoint ""'
 
     input:
     tuple val(target_id), path(test_json), path(staged_file, stageAs: "staged/*"), val(container), val(cpus), val(memory), val(command)
