@@ -8,7 +8,7 @@ workflow INTERNAL_TESTS {
     ch_tests_extra =
         ch_tests
         | map { target_id, test_json, staged_file ->
-            dummy_file = file("${projectDir}/data/dummy.txt")
+            dummy_file = file("${projectDir}/testdata/dummy.txt")
             [ target_id, test_json, staged_file, dummy_file, dummy_file, dummy_file ]
         }
 
