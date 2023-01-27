@@ -1,5 +1,5 @@
 url,file_type,md5_checksum
-syn://syn41864974,TXT,38b86a456d1f441008986c6f798d5ef9
-syn://syn41864977,TXT,a542e9b744bedcfd874129ab0f98c4ff
-syn://syn43716055,TIFF,38b86a456d1f441008986c6f798d5ef9
-syn://syn43716711,TIFF,a542e9b744bedcfd874129ab0f98c4ff
+https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/nf-dcqc/7e076441af6ee467cbcd4f890543563196b213f4/testdata/newline.txt,TXT,38b86a456d1f441008986c6f798d5ef9
+https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/nf-dcqc/7e076441af6ee467cbcd4f890543563196b213f4/testdata/no-newline.txt,TXT,a542e9b744bedcfd874129ab0f98c4ff
+https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/nf-dcqc/7e076441af6ee467cbcd4f890543563196b213f4/testdata/new%20line.txt,TIFF,38b86a456d1f441008986c6f798d5ef9
+https://raw.githubusercontent.com/Sage-Bionetworks-Workflows/nf-dcqc/7e076441af6ee467cbcd4f890543563196b213f4/testdata/no%20newline.txt,TIFF,a542e9b744bedcfd874129ab0f98c4ff
