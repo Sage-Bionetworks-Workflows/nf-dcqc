@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest an idea for the sage/dcqc pipeline
+description: Suggest an idea for the sage-bionetworks-workflows/nf-dcqc pipeline
 labels: enhancement
 body:
   - type: textarea
