@@ -7,6 +7,14 @@ import org.yaml.snakeyaml.Yaml
 class Utils {
 
     //
+    // Useful for pulling information from a JSON file into a Nextflow channel
+    //
+    public static def parseJson(file) {
+        def parser = new groovy.json.JsonSlurper()
+        return parser.parseText(file.text)
+    }
+
+    //
     // When running with -profile conda, warn if channels have not been set-up appropriately
     //
     public static void checkCondaChannels(log) {
