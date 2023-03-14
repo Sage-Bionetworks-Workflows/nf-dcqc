@@ -1,5 +1,5 @@
 process COMBINE_SUITES {
-    label 'process_single'
+    label 'process_low'
     label 'dcqc'
 
     input:
