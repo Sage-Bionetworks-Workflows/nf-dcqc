@@ -22,6 +22,18 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "required_tests": {
+                    "type": "string",
+                    "fa_icon": "fas fa-plus-circle",
+                    "description": "Comma-separated list of tests that are required for a file to pass quality control (QC). Consult the dcqc Python package documentation for information on the default behavior since it is subject to change.",
+                    "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
+                },
+                "skipped_tests": {
+                    "type": "string",
+                    "fa_icon": "fas fa-minus-circle",
+                    "description": "Comma-separated list of tests that should be skipped for all files. Consult the dcqc Python package documentation for information on the default behavior since it is subject to change.",
+                    "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
