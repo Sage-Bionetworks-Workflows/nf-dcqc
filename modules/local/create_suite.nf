@@ -13,7 +13,8 @@ process CREATE_SUITE {
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
     """
-    dcqc create-suite "${target_id}.suite.json" *.json
+    dcqc create-suite ${args} "${target_id}.suite.json" *.json
     """
 }
