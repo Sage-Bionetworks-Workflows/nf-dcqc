@@ -4,7 +4,7 @@ include { COMPUTE_TEST } from '../../modules/local/compute_test'
 
 workflow EXTERNAL_TESTS {
     take:
-    ch_tests  // channel: [ val(target_id), path(test_json), path(staged_file) ]
+    ch_tests  // channel: [ val(target_id), path(test_json) ]
 
     main:
     ch_processes_raw = CREATE_PROCESS(ch_tests)
