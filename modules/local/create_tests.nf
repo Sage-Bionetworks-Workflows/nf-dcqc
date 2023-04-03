@@ -13,7 +13,8 @@ process CREATE_TESTS {
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
     """
-    dcqc create-tests "${target_json}" tests/
+    dcqc create-tests ${args} "${target_json}" tests/
     """
 }
