@@ -4,10 +4,10 @@ process CREATE_TESTS {
     label 'dcqc'
 
     input:
-    tuple val(target_id), path(target_json), path(staged_file, stageAs: "staged/*")
+    tuple val(target_id), path(target_json)
 
     output:
-    tuple val(target_id), path("tests/*"), path(staged_file)
+    tuple val(target_id), path("tests/*")
 
     when:
     task.ext.when == null || task.ext.when

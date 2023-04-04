@@ -1,5 +1,4 @@
 include { CREATE_TARGETS } from '../../modules/local/create_targets'
-include { STAGE_TARGET } from '../../modules/local/stage_target'
 include { CREATE_TESTS } from '../../modules/local/create_tests'
 
 workflow PREPARE_TESTS {
@@ -17,16 +16,14 @@ workflow PREPARE_TESTS {
             [ parsed.id, it ]
         }
 
-    ch_targets_staged = STAGE_TARGET(ch_targets)
-
-    ch_tests_raw = CREATE_TESTS(ch_targets_staged)
+    ch_tests_raw = CREATE_TESTS(ch_targets)
 
     ch_tests =
         ch_tests_raw
         | transpose
-        | map { target_id, test, staged ->
+        | map { target_id, test ->
             parsed = Utils.parseJson(test)
-            [ parsed.is_external_test, [ target_id, test, staged ] ]
+            [ parsed.is_external_test, [ target_id, test ] ]
         }
 
     ch_tests_split =
@@ -39,6 +36,6 @@ workflow PREPARE_TESTS {
         }
 
     emit:
-    internal = ch_tests_split.internal  // channel: [ val(target_id), path(test_json), path(staged_file) ]
-    external = ch_tests_split.external  // channel: [ val(target_id), path(test_json), path(staged_file) ]
+    internal = ch_tests_split.internal  // channel: [ val(target_id), path(test_json) ]
+    external = ch_tests_split.external  // channel: [ val(target_id), path(test_json) ]
 }

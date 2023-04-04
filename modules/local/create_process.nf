@@ -4,16 +4,17 @@ process CREATE_PROCESS {
     label 'dcqc'
 
     input:
-    tuple val(target_id), path(test_json), path(staged_file, stageAs: "staged/*")
+    tuple val(target_id), path(test_json)
 
     output:
-    tuple val(target_id), path(test_json), path(staged_file), path("${test_json.baseName}.process.json")
+    tuple val(target_id), path(test_json), path("dcqc-staged-*"), path("${test_json.baseName}.process.json")
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     """
+    export TMPDIR="./"
     dcqc create-process "${test_json}" "${test_json.baseName}.process.json"
     """
 }
