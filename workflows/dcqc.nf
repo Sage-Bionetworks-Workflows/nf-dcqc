@@ -73,7 +73,7 @@ workflow DCQC {
 
     ch_tests_computed = INTERNAL_TESTS.out.mix(EXTERNAL_TESTS.out)
 
-    ch_summary = PREPARE_REPORTS(ch_tests_computed)
+    ch_summary = PREPARE_REPORTS(ch_tests_computed, ch_input)
 
 }
 
