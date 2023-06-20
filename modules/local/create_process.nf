@@ -7,7 +7,7 @@ process CREATE_PROCESS {
     tuple val(target_id), path(test_json)
 
     output:
-    tuple val(target_id), path(test_json), path("dcqc-staged-*"), path("${test_json.baseName}.process.json")
+    tuple val(target_id), path(test_json), path("dcqc-staged-*/*"), path("${test_json.baseName}.process.json")
 
     when:
     task.ext.when == null || task.ext.when
