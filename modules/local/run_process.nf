@@ -16,6 +16,7 @@ process RUN_PROCESS {
 
     script:
     """
+    echo ${staged_file}
     ( (${command}) > "std_out.txt" 2> "std_err.txt"; echo \$? > "exit_code.txt" ) || true
     """
 }
