@@ -3,6 +3,7 @@ process RUN_PROCESS {
     cpus "${cpus}"
     memory "${memory}"
     container "${container}"
+    debug true
 
     input:
     tuple val(target_id), path(test_json), path(staged_file), val(container), val(cpus), val(memory), val(command)
