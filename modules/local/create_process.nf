@@ -2,7 +2,6 @@ process CREATE_PROCESS {
     tag "$target_id"
     label 'process_single'
     label 'dcqc'
-    debug true
 
     input:
     tuple val(target_id), path(test_json)
