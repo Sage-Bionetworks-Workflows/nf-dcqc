@@ -15,6 +15,7 @@ workflow EXTERNAL_TESTS {
             parsed = Utils.parseJson(cmd)
             [ target_id, test, staged, parsed.container, parsed.cpus, parsed.memory, parsed.command ]
         }
+        
     ch_process_outputs = RUN_PROCESS(ch_processes)
 
     ch_tests_computed = COMPUTE_TEST(ch_process_outputs)
