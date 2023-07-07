@@ -55,12 +55,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 ## Special Considerations for Running `nf-dcqc` on Nextflow Tower
 
 `nf-dcqc` leverages the reports feature when executed on Tower. This is done by pointing Tower to the generated `output.csv` file which is saved to `params.outdir` after a successful run. By default, the `outdir` for the workflow is set to a local directory called `results`. This does not work on Nextflow Tower runs, as you will not have access to the `results` directory once the job has completed. Thus, the `outdir` should be set to an S3 bucket location that the Tower workspace you are using has access to. For example, in the `pipeline parameters` for a Tower run, you can provide YAML such as:
-
 ```yaml
 outdir: s3://example-project-tower-bucket/dcqc_output
 ```
-
 From the reports tab within your workflow run, you can view and download the generated `output.csv` file.
+
 
 ## Credits
 

@@ -44,8 +44,7 @@ body:
 
         * Executor _(eg. slurm, local, awsbatch)_
 
-        * Container engine: _(e.g. Docker, Singularity, Conda, Podman, Shifter, Charliecloud,
-        or Apptainer)_
+        * Container engine: _(e.g. Docker, Singularity, Conda, Podman, Shifter or Charliecloud)_
 
         * OS _(eg. CentOS Linux, macOS, Linux Mint)_
 
