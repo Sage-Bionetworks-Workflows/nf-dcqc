@@ -1,0 +1,3 @@
+reports:
+  "**/output.csv":
+    display: "DCQC Output CSV file"

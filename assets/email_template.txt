@@ -1,10 +1,10 @@
 Run Name: $runName
 
 <% if (success){
-    out << "## sage/dcqc execution completed successfully! ##"
+    out << "## sage-bionetworks-workflows/nf-dcqc execution completed successfully! ##"
 } else {
     out << """####################################################
-## sage/dcqc execution completed unsuccessfully! ##
+## sage-bionetworks-workflows/nf-dcqc execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -27,5 +27,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-sage/dcqc
-https://github.com/sage/dcqc
+sage-bionetworks-workflows/nf-dcqc
+https://github.com/sage-bionetworks-workflows/nf-dcqc

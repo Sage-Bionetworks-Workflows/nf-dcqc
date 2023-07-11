@@ -9,12 +9,12 @@ Content-Type: text/html; charset=utf-8
 $email_html
 
 --nfcoremimeboundary
-Content-Type: image/png;name="sage-dcqc_logo.png"
+Content-Type: image/png;name="sage-bionetworks-workflows-nf-dcqc_logo.png"
 Content-Transfer-Encoding: base64
 Content-ID: <nfcorepipelinelogo>
-Content-Disposition: inline; filename="sage-dcqc_logo_light.png"
+Content-Disposition: inline; filename="sage-bionetworks-workflows-nf-dcqc_logo_light.png"
 
-<% out << new File("$projectDir/assets/sage-dcqc_logo_light.png").
+<% out << new File("$projectDir/assets/sage-bionetworks-workflows-nf-dcqc_logo_light.png").
     bytes.
     encodeBase64().
     toString().
