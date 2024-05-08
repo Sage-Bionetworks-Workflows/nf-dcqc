@@ -4,17 +4,12 @@ syn://syn59069842,TXT,not_the_right_md5,bad_md5_extension_txt
 syn://syn59095050,TIFF,c7b08f6decb5e7572efbe6074926a843,good_tiff
 syn://syn59094930,TIFF,d817d0c76ce47b4ddc75368cfc7996ff,bad_date_tag_tiff
 syn://syn59094943,TIFF,28a9ee7d0e994d494068ce8d6cda0268,bad_date_time_tiff
-syn://syn58937898,TIFF,1d6155b60405bab055527913efd734a7,not_a_tiff
 syn://syn59094934,OME-TIFF,64bbfe1d1c9c171cad17b11e666b31b4,good_ome_tiff
 syn://syn59094932,OME-TIFF,a2550a887091d51351d547c8beae8f0c,bad_xml_ome_tiff
-syn://syn58937898,OME-TIFF,1d6155b60405bab055527913efd734a7,not_an_ome_tiff
 syn://syn59094945,HDF5,93d78663da24b6a708f6c81207e4410a,good_hd5
 syn://syn59094941,TSV,2ff237d635d9eb35e09aacda22f0417f,good_tsv
 syn://syn59095211,CSV,72c61a50b286ff6fd3d038211426b910,good_csv
 syn://syn59095268,JSON,9e7f473ccbc055ef7ac800ce861a88af,good_json
-syn://syn58937898,JSON,1d6155b60405bab055527913efd734a7,not_a_json
 syn://syn59094940,JSON-LD,56bb5f34da6d6df2ade3ac37e25586b7,good_json_ld
-syn://syn58937898,JSON-LD,1d6155b60405bab055527913efd734a7,not_a_json_ld
 syn://syn59094935,BAM,14758f1afd44c09b7992073ccf00b43d,good_bam
 syn://syn59094937,FASTQ,14758f1afd44c09b7992073ccf00b43d,good_fastq
-syn://syn58937898,FASTQ,1d6155b60405bab055527913efd734a7,not_a_fastq
