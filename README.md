@@ -25,6 +25,29 @@ On release, automated continuous integration tests run the pipeline on a full-si
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
+## Pipeline Flow
+
+```mermaid
+  flowchart LR;
+    subgraph PREPARE TESTS;
+    A[CREATE TARGETS]-->B[CREATE TESTS];
+    end;
+    subgraph INTERNAL TESTS;
+    B-->C[COMPUTE TEST];
+    end;
+    subgraph EXTERNAL TESTS;
+    B-->D[CREATE PROCESS];
+    D-->E[RUN PROCESS];
+    E-->F[COMPUTE TEST];
+    end;
+    subgraph PREPARE REPORTS;
+    C-->G[CREATE SUITE];
+    F-->G;
+    G-->H[COMBINE SUITES];
+    H-->I[UPDATE INPUT CSV];
+    end;
+```
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.4`)
