@@ -20,10 +20,19 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Prepare Tests
+   - Create targets (`dcqc create-targets`) - Generates target specifications from input CSV
+   - Create tests (`dcqc create-tests`) - Creates test specifications for each target
+1. Run Internal Tests
+   - Compute test results (`dcqc compute-test`) - Runs internal tests that don't require external processes
+1. Run External Tests
+   - Create process (`dcqc create-process`) - Generates process specifications for external tests
+   - Run process - Executes external processes
+   - Compute test results (`dcqc compute-test`) - Evaluates results from external processes
+1. Prepare Reports
+   - Create test suites (`dcqc create-suite`) - Groups test results by target
+   - Combine test suites (`dcqc combine-suites`) - Aggregates results across all test suites
+   - Update input CSV (`dcqc update-csv`) - Updates the original input CSV with test results
 
 ## Pipeline Flow
 
@@ -87,9 +96,7 @@ From the reports tab within your workflow run, you can view and download the gen
 
 ## Credits
 
-sage/dcqc was originally written by Bruno Grande <bruno.grande@sagebionetworks.org>.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
+sage/dcqc was originally written by Bruno Grande.
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
