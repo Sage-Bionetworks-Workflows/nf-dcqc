@@ -1,0 +1,10 @@
+# MultiQC Configuration for DCQC Validation Plugin
+
+# Force run the dcqc_validation module
+run_modules:
+  - dcqc_validation
+
+# Search pattern for dcqc_validation (plugin for DCQC validation)
+sp:
+  dcqc_validation:
+    fn: "suites.json"
