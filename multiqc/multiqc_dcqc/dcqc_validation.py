@@ -7,10 +7,15 @@ import json
 import logging
 from collections import defaultdict
 
-from multiqc.base_module import BaseMultiqcModule, ModuleNoSamplesFound
+from multiqc.modules.base_module import BaseMultiqcModule
 from multiqc.plots import table, bargraph
 
 log = logging.getLogger(__name__)
+
+
+# Exception for when no samples are found
+class ModuleNoSamplesFound(Exception):
+    pass
 
 
 class MultiqcModule(BaseMultiqcModule):
