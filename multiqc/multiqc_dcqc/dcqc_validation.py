@@ -7,22 +7,10 @@ import json
 import logging
 from collections import defaultdict
 
-# Handle different MultiQC versions
-try:
-    from multiqc.modules.base_module import BaseMultiqcModule
-except ImportError:
-    try:
-        from multiqc import BaseMultiqcModule
-    except ImportError:
-        from multiqc.modules import BaseMultiqcModule
-
+from multiqc.base_module import BaseMultiqcModule, ModuleNoSamplesFound
 from multiqc.plots import table, bargraph
 
 log = logging.getLogger(__name__)
-
-# Exception for when no samples are found
-class ModuleNoSamplesFound(Exception):
-    pass
 
 
 class MultiqcModule(BaseMultiqcModule):
@@ -89,7 +77,7 @@ class MultiqcModule(BaseMultiqcModule):
 
                     file_info = files[0]  # Single file per suite
                     file_name = file_info.get("name", "Unknown")
-                    sample_id = target.get("id", file_name)
+                    sample_id = self.clean_s_name(target.get("id", file_name), f)
 
                     # Extract suite status
                     suite_status = suite.get("suite_status", {})
@@ -169,19 +157,9 @@ class MultiqcModule(BaseMultiqcModule):
         # Prepare data for general stats
         stats_data = {}
         for sample_id, data in self.suite_data.items():
-            status = data["overall_status"]
-
-            # Color code the status
-            status_display = {
-                "GREEN": '<span style="color: green; font-weight: bold;">✓ PASS</span>',
-                "RED": '<span style="color: red; font-weight: bold;">✗ FAIL</span>',
-                "YELLOW": '<span style="color: orange; font-weight: bold;">⚠ WARNING</span>',
-                "AMBER": '<span style="color: orange; font-weight: bold;">⚠ WARNING</span>',
-            }.get(status, status)
-
             stats_data[sample_id] = {
                 "suite_type": data["suite_type"],
-                "status": status_display,
+                "status": data["overall_status"],
                 "passed": data["passed"],
                 "failed": data["failed"],
                 "total": data["total_tests"],
@@ -198,6 +176,11 @@ class MultiqcModule(BaseMultiqcModule):
                 "title": "Status",
                 "description": "Overall validation status",
                 "scale": False,
+                "cond_formatting_rules": {
+                    "pass": [{"s_eq": "GREEN"}],
+                    "warn": [{"s_eq": "YELLOW"}, {"s_eq": "AMBER"}, {"s_eq": "GREY"}],
+                    "fail": [{"s_eq": "RED"}],
+                },
             },
             "passed": {
                 "title": "Passed",
@@ -249,19 +232,9 @@ class MultiqcModule(BaseMultiqcModule):
         # Prepare data for the summary table
         table_data = {}
         for sample_id, data in samples.items():
-            status = data["overall_status"]
-
-            # Color code the status
-            status_display = {
-                "GREEN": '<span style="color: green; font-weight: bold;">✓ PASS</span>',
-                "RED": '<span style="color: red; font-weight: bold;">✗ FAIL</span>',
-                "YELLOW": '<span style="color: orange; font-weight: bold;">⚠ WARNING</span>',
-                "AMBER": '<span style="color: orange; font-weight: bold;">⚠ WARNING</span>',
-            }.get(status, status)
-
             table_data[sample_id] = {
                 "file_name": data["file_name"],
-                "status": status_display,
+                "status": data["overall_status"],
                 "passed": data["passed"],
                 "failed": data["failed"],
                 "total": data["total_tests"],
@@ -278,6 +251,11 @@ class MultiqcModule(BaseMultiqcModule):
                 "title": "Overall Status",
                 "description": "Overall validation status",
                 "scale": False,
+                "cond_formatting_rules": {
+                    "pass": [{"s_eq": "GREEN"}],
+                    "warn": [{"s_eq": "YELLOW"}, {"s_eq": "AMBER"}, {"s_eq": "GREY"}],
+                    "fail": [{"s_eq": "RED"}],
+                },
             },
             "passed": {
                 "title": "Passed",
@@ -304,6 +282,7 @@ class MultiqcModule(BaseMultiqcModule):
             "id": f"dcqc_{suite_type}_summary_table",
             "namespace": f"DCQC {suite_type}",
             "title": f"{suite_type} File Summary",
+            "col1_header": "Sample ID",
         }
 
         self.add_section(
@@ -324,19 +303,11 @@ class MultiqcModule(BaseMultiqcModule):
         for idx, test in enumerate(tests):
             row_id = f"{test['sample']}_{test['test_type']}_{idx}"
 
-            # Color code status
-            status = test["status"]
-            status_display = {
-                "passed": '<span style="color: green;">✓ Pass</span>',
-                "failed": '<span style="color: red;">✗ Fail</span>',
-                "skipped": '<span style="color: gray;">○ Skip</span>',
-            }.get(status, status)
-
             table_data[row_id] = {
                 "sample": test["sample"],
                 "test": test["test_type"],
                 "tier": test["tier"],
-                "status": status_display,
+                "status": test["status"],
                 "external": "Yes" if test["external"] else "No",
             }
 
@@ -361,6 +332,11 @@ class MultiqcModule(BaseMultiqcModule):
                 "title": "Status",
                 "description": "Test result status",
                 "scale": False,
+                "cond_formatting_rules": {
+                    "pass": [{"s_eq": "passed"}],
+                    "warn": [{"s_eq": "skipped"}],
+                    "fail": [{"s_eq": "failed"}],
+                },
             },
             "external": {
                 "title": "External",
