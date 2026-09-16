@@ -34,6 +34,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 */
 
 // Local Modules
+include { MULTIQC } from '../modules/local/multiqc'
 
 // Local Subworkflows
 include { PREPARE_TESTS } from '../subworkflows/local/prepare_tests'
@@ -74,6 +75,15 @@ workflow DCQC {
     ch_tests_computed = INTERNAL_TESTS.out.mix(EXTERNAL_TESTS.out)
 
     ch_summary = PREPARE_REPORTS(ch_tests_computed, ch_input)
+
+    // Generate MultiQC report from suites.json. The dcqc_validation plugin
+    // ships in the py-dcqc container via the `multiqc.modules.v1` entry point.
+    ch_multiqc_config = Channel.fromPath("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+
+    MULTIQC(
+        ch_summary,
+        ch_multiqc_config
+    )
 
 }
 

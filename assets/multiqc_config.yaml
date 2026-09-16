@@ -1,0 +1,10 @@
+# MultiQC config for the DCQC validation plugin shipped in py-dcqc
+# (see dcqc.multiqc_plugin.dcqc_validation:MultiqcModule).
+#
+# Registers the file-search pattern so MultiQC's file_search phase picks up
+# suites.json. The plugin itself is discovered via the `multiqc.modules.v1`
+# entry point in py-dcqc's setup.cfg — no runtime plugin install required.
+
+sp:
+  dcqc_validation:
+    fn: "suites.json"
