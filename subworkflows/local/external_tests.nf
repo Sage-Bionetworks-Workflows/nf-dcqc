@@ -12,7 +12,7 @@ workflow EXTERNAL_TESTS {
     ch_processes =
         ch_processes_raw
         | map { target_id, test, staged, cmd ->
-            parsed = Utils.parseJson(cmd)
+            def parsed = Utils.parseJson(cmd)
             [ target_id, test, staged, parsed.container, parsed.cpus, parsed.memory, parsed.command ]
         }
         
