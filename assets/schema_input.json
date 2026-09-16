@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/sage/dcqc/master/assets/schema_input.json",
     "title": "sage/dcqc pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
@@ -7,22 +7,30 @@
     "items": {
         "type": "object",
         "properties": {
-            "url": {
+            "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "File URL must be provided and cannot contain spaces"
+                "errorMessage": "Sample name must be provided and cannot contain spaces"
             },
-            "file_type": {
+            "fastq_1": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "File type cannot contain spaces"
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
-            "md5_checksum": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "MD5 checksum cannot contain spaces"
+            "fastq_2": {
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "pattern": "^\\S+\\.f(ast)?q\\.gz$"
+                    },
+                    {
+                        "type": "string",
+                        "maxLength": 0
+                    }
+                ]
             }
         },
-        "required": ["url"]
+        "required": ["sample", "fastq_1"]
     }
 }
