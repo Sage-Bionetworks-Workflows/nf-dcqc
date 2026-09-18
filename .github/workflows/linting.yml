@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   EditorConfig:
     runs-on: ubuntu-latest
@@ -39,6 +42,9 @@ jobs:
 
   PythonBlack:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -82,6 +88,9 @@ jobs:
 
   # nf-core:
   #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pull-requests: write
   #   steps:
   #     - name: Check out pipeline code
   #       uses: actions/checkout@v7.0.1
