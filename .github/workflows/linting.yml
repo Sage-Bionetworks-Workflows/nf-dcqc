@@ -79,7 +79,7 @@ jobs:
   # reverted commits on this branch) just moves the uncaught critical error to
   # the next schema-touching check instead of fixing it. Re-enable this job
   # only once the draft-07/2020-12 incompatibility above is actually resolved.
-  
+
   # nf-core:
   #   runs-on: ubuntu-latest
   #   steps:
