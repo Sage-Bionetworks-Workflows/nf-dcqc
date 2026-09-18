@@ -4,7 +4,7 @@ nf-dcqc (`sage/dcqc`) is a Nextflow DSL2 pipeline that runs Data Curator QC (DCQ
 
 ## Stack
 
-- Nextflow DSL2, `manifest.nextflowVersion = '!>=22.10.4'` — in practice only works up to Nextflow 25.10.0 (see Constraints).
+- Nextflow DSL2, `manifest.nextflowVersion = '!>=22.10.4,<=25.10.0'` — the upper cap is enforced in the manifest itself, not just a practical limit (see Constraints).
 - Groovy: `lib/*.groovy`, standard nf-core template helper classes.
 - Python: `bin/check_samplesheet.py` (Black line-length 120, isort black profile via `pyproject.toml`) — currently dead code, not invoked anywhere (see Anti-Patterns).
 - Execution profiles: `docker`, `singularity`, `podman`, `shifter`, `charliecloud`, `conda`, `mamba`, `debug`, `arm`, `gitpod`, `local`, `test`, `test_full`.
@@ -52,7 +52,7 @@ There is no unit test framework (no nf-test); correctness is checked only by run
 
 - **Never raise `manifest.nextflowVersion` past `25.10.0` or otherwise assume Nextflow ≥26.04 is supported.** Nextflow's strict config parser (default since 26.04.0) rejects the bare `def check_max(obj, type) { ... }` function at `nextflow.config:184` and other 2022-era Groovy patterns throughout `lib/` and `workflows/dcqc.nf`. Because: a full migration was attempted (commit `8b32ac9`), hit two confirmed unfixed Nextflow bugs (nextflow-io/nextflow#5261, #804), and was reverted the same day (commit `7883a67`) as incomplete/unverified. Tracked in Jira DPE-1808 and still-open PR #22. If asked to attempt this migration again, read PR #22's description and `git show 8b32ac9` first — they map the exact pitfalls.
 - **Never set, request, or hardcode `SYNAPSE_AUTH_TOKEN`.** It is a per-machine credential the user sets themselves via `nextflow secrets set` — treat it as entirely out of scope to touch.
-- CI (`.github/workflows/ci.yml`) currently tests `NXF_VER: ["25.04.6", "latest-everything"]`. `latest-everything` resolves to a version known to break this pipeline (see above) — a green CI run does not mean the pipeline works on newer Nextflow.
+- CI (`.github/workflows/ci.yml`) currently tests `NXF_VER: ["22.10.4", "25.10.0"]` — both ends of the supported range set by the manifest cap. A green CI run now does confirm the pipeline works within that range, but it says nothing about Nextflow versions above 25.10.0.
 
 ## Anti-Patterns — Do NOT
 
