@@ -1,5 +1,9 @@
 repository_type: pipeline
 lint:
+  # schema_lint wants draft 2020-12 / $defs, but lib/NfcoreSchema.groovy only
+  # supports draft-07 / definitions. Changing the schema breaks pipeline
+  # startup (see CLAUDE.md), so this check is skipped instead of fixed.
+  schema_lint: False
   files_exist:
     - CODE_OF_CONDUCT.md
     - assets/nf-core-dcqc_logo_light.png
