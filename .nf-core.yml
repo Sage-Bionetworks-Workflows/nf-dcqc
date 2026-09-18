@@ -1,9 +1,14 @@
 repository_type: pipeline
 lint:
-  # schema_lint wants draft 2020-12 / $defs, but lib/NfcoreSchema.groovy only
-  # supports draft-07 / definitions. Changing the schema breaks pipeline
-  # startup (see CLAUDE.md), so this check is skipped instead of fixed.
+  # schema_lint and schema_params both call PipelineSchema.load_lint_schema(),
+  # which asserts the schema is draft 2020-12. This repo must stay on draft-07
+  # / definitions because lib/NfcoreSchema.groovy only supports that (changing
+  # it breaks pipeline startup, see CLAUDE.md). schema_lint catches the
+  # AssertionError itself, but schema_params does not, so leaving schema_params
+  # enabled aborts the whole `nf-core lint` run as an uncaught critical error.
+  # Both are skipped instead of fixed.
   schema_lint: False
+  schema_params: False
   files_exist:
     - CODE_OF_CONDUCT.md
     - assets/nf-core-dcqc_logo_light.png
