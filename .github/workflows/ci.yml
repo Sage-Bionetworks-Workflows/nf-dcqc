@@ -24,8 +24,8 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "25.04.6"
-          - "latest-everything"
+          - "22.10.4"
+          - "25.10.0"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
