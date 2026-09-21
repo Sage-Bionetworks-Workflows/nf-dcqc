@@ -12,6 +12,10 @@ nf-dcqc (`sage/dcqc`) is a Nextflow DSL2 pipeline that runs Data Curator QC (DCQ
 ## Commands
 
 ```bash
+# Verify the installed Nextflow is within the supported range before running anything below
+# (must be >=22.10.4 and <=25.10.0 — see Constraints; 26.x+ breaks this pipeline)
+nextflow -version
+
 # Set the Synapse credential once per machine (never do this on the user's behalf)
 nextflow secrets set SYNAPSE_AUTH_TOKEN <token>
 
