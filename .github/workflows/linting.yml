@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+env:
+  NXF_VER: "25.10.0"
+
 jobs:
   EditorConfig:
     runs-on: ubuntu-latest
@@ -74,7 +77,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
+        uses: nf-core/setup-nextflow@893c28b667aedeba26e37f296d260ccc5bc4d914 # v3.0.1
+        with:
+          version: "${{ env.NXF_VER }}"
 
       - uses: actions/setup-python@v4
         with:
