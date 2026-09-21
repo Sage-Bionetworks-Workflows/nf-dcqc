@@ -103,6 +103,14 @@ outdir: s3://example-project-tower-bucket/dcqc_output
 
 From the reports tab within your workflow run, you can view and download the generated `output.csv` file.
 
+## `py-dcqc` Image
+
+This pipeline's own version is tracked in `manifest.version` (`nextflow.config`) and `CHANGELOG.md`, following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) / semver convention inherited from the nf-core template. Publishing a GitHub Release runs the same CI job (`-profile test,docker`) defined in `.github/workflows/ci.yml`.
+
+All QC logic itself lives in a separate container, [`ghcr.io/sage-bionetworks-workflows/py-dcqc`](https://github.com/sage-bionetworks-workflows/py-dcqc), which is versioned and released independently of this pipeline. This repo pins that container to a specific tag in the `withLabel:dcqc` block of `conf/base.config`, rather than tracking `:latest`, so that pipeline runs stay reproducible over time and don't silently pick up breaking changes from py-dcqc.
+
+To pick up a new `py-dcqc` release, update the tag in `conf/base.config` only (there is no other place that sets this container), then re-run the `test`/`test_full` profile before merging, since py-dcqc's CLI contract can change between versions.
+
 ## Credits
 
 Sage-Bionetworks-Workflows/nf-dcqc (sage/dcqc) was originally written by Bruno Grande.
