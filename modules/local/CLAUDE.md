@@ -1,6 +1,6 @@
 ## Project
 
-Thin Nextflow process wrappers around the external `dcqc` CLI (from the `py-dcqc` container). Each module maps to one `dcqc` subcommand: `create-targets`, `create-tests`, `create-process`, `compute-test`, `create-suite`, `combine-suites`, `update-csv`.
+Thin Nextflow process wrappers around the external `dcqc` CLI (from the `py-dcqc` container). Most modules map to one `dcqc` subcommand: `create-targets`, `create-tests`, `create-process`, `compute-test`, `create-suite`, `combine-suites`, `update-csv`. Two exceptions: `run_process.nf` runs the `${command}` string built by `create_process.nf` directly, not a fixed subcommand, and `dcqc_version.nf` calls `dcqc --version`, a flag rather than a subcommand.
 
 ## Conventions
 
