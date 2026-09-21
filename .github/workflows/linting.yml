@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+env:
+  NXF_VER: "25.10.0"
+
 permissions:
   contents: read
 
@@ -49,7 +52,7 @@ jobs:
       - uses: actions/checkout@v7.0.1
 
       - name: Check code lints with Black
-        uses: psf/black@87928e6d6761a4a6d22250e1fee5601b3998086e # stable
+        uses: psf/black@87928e6d6761a4a6d22250e1fee5601b3998086e # 26.5.1
 
       # If the above check failed, post a comment on the PR explaining the failure
       - name: Post PR comment
@@ -98,7 +101,7 @@ jobs:
   #     - name: Install Nextflow
   #       uses: nf-core/setup-nextflow@893c28b667aedeba26e37f296d260ccc5bc4d914 # v3.0.1
   #       with:
-  #         version: "25.10.0"
+  #         version: "${{ env.NXF_VER }}"
   #
   #     - uses: actions/setup-python@v7.0.0
   #       with:
