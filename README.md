@@ -61,6 +61,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=24.10.0`)
 
+   > The pipeline sets a minimum Nextflow version only, with no upper bound (see `manifest.nextflowVersion` in `nextflow.config`). The code works with the strict config parser, which is the default from Nextflow 26.04.0. CI (`.github/workflows/ci.yml`) runs the test profile on the minimum version, on the version that Sage's Seqera Platform uses, and on `latest-everything`.
+
 2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
 
 3. Add your Synapse token as a nextflow secret
