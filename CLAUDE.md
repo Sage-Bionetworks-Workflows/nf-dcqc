@@ -5,7 +5,7 @@ nf-dcqc (`sage/dcqc`) is a Nextflow DSL2 pipeline that runs Data Curator QC (DCQ
 ## Stack
 
 - Nextflow DSL2. The supported Nextflow range is declared in `manifest.nextflowVersion` (`nextflow.config`) — read it there for the exact bound. There is a lower bound only (no upper cap): the code was migrated to work with Nextflow's strict config parser (default since 26.04.0).
-- Parameter validation, help text and the parameter summary come from the `nf-schema` plugin (version pinned in the `plugins {}` block of `nextflow.config`), called from the entry `workflow {}` block in `main.nf` (`validateParameters`, `paramsHelp`, `paramsSummaryLog`, `paramsSummaryMap`).
+- Parameter validation, help text and the parameter summary come from the `nf-schema` plugin (version pinned in the `plugins {}` block of `nextflow.config`), called from the entry `workflow {}` block in `main.nf` (`validateParameters`, `paramsSummaryLog`, `paramsSummaryMap`). The `--help` message is not called from `main.nf`: it comes from the `validation { help { ... } }` block in `nextflow.config`, so do not declare a `help` param.
 - Resource caps use the native `process.resourceLimits` in `conf/base.config` (fed by `params.max_cpus` / `max_memory` / `max_time`), not the old `check_max()` function.
 - Groovy: `lib/*.groovy`, the remaining nf-core template helper classes (see `lib/CLAUDE.md`).
 - Python: `bin/check_samplesheet.py` (Black line-length 120, isort black profile via `pyproject.toml`) — currently dead code, not invoked anywhere (see Anti-Patterns).

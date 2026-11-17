@@ -8,7 +8,7 @@ The remaining nf-core template Groovy helper classes, plus a vendored Joda-Time 
 
 ## Constraints
 
-- Do NOT add back `WorkflowMain.groovy` or `NfcoreSchema.groovy`. They were removed in the `nf-schema` migration (commit `5c8b5be`, PR #22). Use the `nf-schema` plugin functions (`validateParameters`, `paramsHelp`, `paramsSummaryLog`, `paramsSummaryMap`) in `main.nf` instead.
+- Do NOT add back `WorkflowMain.groovy` or `NfcoreSchema.groovy`. They were removed in the `nf-schema` migration (commit `5c8b5be`, PR #22). Use the `nf-schema` plugin functions (`validateParameters`, `paramsSummaryLog`, `paramsSummaryMap`) in `main.nf` instead.
 - `email()` and `IM_notification()` take the `summary_params` map produced by `nf-schema`'s `paramsSummaryMap(workflow)`. If you change how that map is built, keep its group → param → value shape.
 
 ## Anti-Patterns — Do NOT

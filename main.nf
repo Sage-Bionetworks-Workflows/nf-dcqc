@@ -23,7 +23,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { validateParameters; paramsSummaryLog; paramsSummaryMap; paramsHelp } from 'plugin/nf-schema'
+include { validateParameters; paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-schema'
 include { DCQC } from './workflows/dcqc'
 
 //
@@ -49,12 +49,6 @@ workflow SAGE_DCQC {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-
-    // Print help to screen if required
-    if (params.help) {
-        log.info paramsHelp("nextflow run ${workflow.manifest.name} --input samplesheet.csv -profile docker")
-        exit 0
-    }
 
     // Print workflow version and exit on --version
     if (params.version) {
