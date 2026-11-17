@@ -53,13 +53,13 @@ workflow {
     // Print help to screen if required
     if (params.help) {
         log.info paramsHelp("nextflow run ${workflow.manifest.name} --input samplesheet.csv -profile docker")
-        System.exit(0)
+        exit 0
     }
 
     // Print workflow version and exit on --version
     if (params.version) {
         log.info "${workflow.manifest.name} ${NfcoreTemplate.version(workflow)}"
-        System.exit(0)
+        exit 0
     }
 
     // Validate workflow parameters via the JSON schema
@@ -83,8 +83,7 @@ workflow {
 
     // Check input has been provided
     if (!params.input) {
-        log.error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'"
-        System.exit(1)
+        error "Please provide an input samplesheet to the pipeline e.g. '--input samplesheet.csv'"
     }
     def ch_input = file(params.input, checkIfExists: true)
 
