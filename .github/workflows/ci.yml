@@ -27,8 +27,9 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "22.10.4"
-          - "25.10.0"
+          - "25.10.0" # Oldest version that works (nf-schema 2.7.2 needs >=25.10.0)
+          - "26.04.0" # Seqera version
+          - "latest-everything"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v7.0.1
@@ -44,3 +45,31 @@ jobs:
         run: |
           nextflow secrets set SYNAPSE_AUTH_TOKEN "${SYNAPSE_AUTH_TOKEN}"
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+
+  nf-test:
+    name: Run nf-test tests
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'sage/dcqc') }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        NXF_VER:
+          - "25.10.0" # Oldest version that works (nf-schema 2.7.2 needs >=25.10.0)
+          - "26.04.0" # Seqera version
+          - "latest-everything"
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v7.0.1
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@c66f1bfa2dc817ae23f4b34eaa26fa5f1453ca71 # v3.1.0
+        with:
+          version: "${{ matrix.NXF_VER }}"
+
+      - name: Install nf-test
+        uses: nf-core/setup-nf-test@4069fbbaabe94c08faba4ad261bfa88225ba133f # v2.1.0
+        with:
+          version: "0.9.5"
+
+      # These tests need no container and no Synapse token
+      - name: Run nf-test
+        run: nf-test test --ci --verbose

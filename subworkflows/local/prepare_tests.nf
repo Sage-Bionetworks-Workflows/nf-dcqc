@@ -12,7 +12,7 @@ workflow PREPARE_TESTS {
         ch_targets_raw
         | flatten
         | map {
-            parsed = Utils.parseJson(it)
+            def parsed = Utils.parseJson(it)
             [ parsed.id, it ]
         }
 
@@ -22,7 +22,7 @@ workflow PREPARE_TESTS {
         ch_tests_raw
         | transpose
         | map { target_id, test ->
-            parsed = Utils.parseJson(test)
+            def parsed = Utils.parseJson(test)
             [ parsed.is_external_test, [ target_id, test ] ]
         }
 

@@ -54,7 +54,7 @@ class NfcoreTemplate {
     //
     // Construct and send completion email
     //
-    public static void email(workflow, params, summary_params, projectDir, log, multiqc_report=[]) {
+    public static void email(workflow, params, summary_params, projectDir, log) {
 
         // Set up the e-mail variables
         def subject = "[$workflow.manifest.name] Successful: $workflow.runName"
@@ -92,24 +92,6 @@ class NfcoreTemplate {
         email_fields['projectDir']   = workflow.projectDir
         email_fields['summary']      = summary << misc_fields
 
-        // On success try attach the multiqc report
-        def mqc_report = null
-        try {
-            if (workflow.success) {
-                mqc_report = multiqc_report.getVal()
-                if (mqc_report.getClass() == ArrayList && mqc_report.size() >= 1) {
-                    if (mqc_report.size() > 1) {
-                        log.warn "[$workflow.manifest.name] Found multiple reports from process 'MULTIQC', will use only one"
-                    }
-                    mqc_report = mqc_report[0]
-                }
-            }
-        } catch (all) {
-            if (multiqc_report) {
-                log.warn "[$workflow.manifest.name] Could not attach MultiQC report to summary email"
-            }
-        }
-
         // Check if we are only sending emails on failure
         def email_address = params.email
         if (!params.email && params.email_on_fail && !workflow.success) {
@@ -128,28 +110,30 @@ class NfcoreTemplate {
         def email_html    = html_template.toString()
 
         // Render the sendmail template
-        def max_multiqc_email_size = params.max_multiqc_email_size as nextflow.util.MemoryUnit
-        def smail_fields           = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir", mqcFile: mqc_report, mqcMaxSize: max_multiqc_email_size.toBytes() ]
-        def sf                     = new File("$projectDir/assets/sendmail_template.txt")
-        def sendmail_template      = engine.createTemplate(sf).make(smail_fields)
-        def sendmail_html          = sendmail_template.toString()
+        def smail_fields      = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir" ]
+        def sf                = new File("$projectDir/assets/sendmail_template.txt")
+        def sendmail_template = engine.createTemplate(sf).make(smail_fields)
+        def sendmail_html     = sendmail_template.toString()
 
         // Send the HTML e-mail
-        Map colors = logColours(params.monochrome_logs)
+        Map colors = logColours(params.monochrome_logs.toString().toBoolean())
         if (email_address) {
             try {
-                if (params.plaintext_email) { throw GroovyException('Send plaintext e-mail, not HTML') }
+                if (params.plaintext_email.toString().toBoolean()) { throw GroovyException('Send plaintext e-mail, not HTML') }
                 // Try to send HTML e-mail using sendmail
                 [ 'sendmail', '-t' ].execute() << sendmail_html
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (sendmail)-"
             } catch (all) {
                 // Catch failures and try with plaintext
                 def mail_cmd = [ 'mail', '-s', subject, '--content-type=text/html', email_address ]
-                if ( mqc_report.size() <= max_multiqc_email_size.toBytes() ) {
-                    mail_cmd += [ '-A', mqc_report ]
+                try {
+                    mail_cmd.execute() << email_html
+                    log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (mail)-"
+                } catch (IOException e) {
+                    // No sendmail and no mail command: log a warning and continue,
+                    // so that the report files are written and onComplete does not stop
+                    log.warn "-${colors.purple}[$workflow.manifest.name]${colors.yellow} Could not send summary e-mail to $email_address: no sendmail or mail command (${e.message})-"
                 }
-                mail_cmd.execute() << email_html
-                log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (mail)-"
             }
         }
 
@@ -226,7 +210,7 @@ class NfcoreTemplate {
     // Print pipeline summary on completion
     //
     public static void summary(workflow, params, log) {
-        Map colors = logColours(params.monochrome_logs)
+        Map colors = logColours(params.monochrome_logs.toString().toBoolean())
         if (workflow.success) {
             if (workflow.stats.ignoredCount == 0) {
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Pipeline completed successfully${colors.reset}-"
