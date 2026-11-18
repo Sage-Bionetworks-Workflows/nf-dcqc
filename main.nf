@@ -60,14 +60,18 @@ workflow {
         exit 0
     }
 
+    // On Nextflow 26+, boolean flags from the command line arrive as strings
+    // ('--validate_params false' gives 'false', which is true in Groovy).
+    // toString().toBoolean() gives the correct value for strings and booleans.
+
     // Print workflow version and exit on --version
-    if (params.version) {
+    if (params.version.toString().toBoolean()) {
         log.info "${workflow.manifest.name} ${NfcoreTemplate.version(workflow)}"
         exit 0
     }
 
     // Validate workflow parameters via the JSON schema
-    if (params.validate_params) {
+    if (params.validate_params.toString().toBoolean()) {
         validateParameters()
     }
 

@@ -135,10 +135,10 @@ class NfcoreTemplate {
         def sendmail_html          = sendmail_template.toString()
 
         // Send the HTML e-mail
-        Map colors = logColours(params.monochrome_logs)
+        Map colors = logColours(params.monochrome_logs.toString().toBoolean())
         if (email_address) {
             try {
-                if (params.plaintext_email) { throw GroovyException('Send plaintext e-mail, not HTML') }
+                if (params.plaintext_email.toString().toBoolean()) { throw GroovyException('Send plaintext e-mail, not HTML') }
                 // Try to send HTML e-mail using sendmail
                 [ 'sendmail', '-t' ].execute() << sendmail_html
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (sendmail)-"
@@ -226,7 +226,7 @@ class NfcoreTemplate {
     // Print pipeline summary on completion
     //
     public static void summary(workflow, params, log) {
-        Map colors = logColours(params.monochrome_logs)
+        Map colors = logColours(params.monochrome_logs.toString().toBoolean())
         if (workflow.success) {
             if (workflow.stats.ignoredCount == 0) {
                 log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Pipeline completed successfully${colors.reset}-"
