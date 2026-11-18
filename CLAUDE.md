@@ -5,7 +5,7 @@ nf-dcqc (`sage/dcqc`) is a Nextflow DSL2 pipeline that runs Data Curator QC (DCQ
 ## Stack
 
 - Nextflow DSL2. The supported Nextflow range is declared in `manifest.nextflowVersion` (`nextflow.config`) — read it there for the exact bound. There is a lower bound only (no upper cap): the code was migrated to work with Nextflow's strict config parser (default since 26.04.0).
-- Parameter validation, help text and the parameter summary come from the `nf-schema` plugin (version pinned in the `plugins {}` block of `nextflow.config`), called from the entry `workflow {}` block in `main.nf` (`validateParameters`, `paramsSummaryLog`, `paramsSummaryMap`). The `--help` message is not called from `main.nf`: it comes from the `validation { help { ... } }` block in `nextflow.config`, so do not declare a `help` param.
+- Parameter validation, help text and the parameter summary come from the `nf-schema` plugin (version pinned in the `plugins {}` block of `nextflow.config`), called from the entry `workflow {}` block in `main.nf` (`validateParameters`, `paramsSummaryLog`, `paramsSummaryMap`). The `--help <param>` and `--helpFull` messages come from the `validation { help { ... } }` block in `nextflow.config`. That block sees `--help` with no value as the string `'true'` and fails silently, so `main.nf` calls `paramsHelp()` as a fallback for that case. Do not declare a `help` param.
 - Resource caps use the native `process.resourceLimits` in `conf/base.config` (fed by `params.max_cpus` / `max_memory` / `max_time`), not the old `check_max()` function.
 - Groovy: `lib/*.groovy`, the remaining nf-core template helper classes (see `lib/CLAUDE.md`).
 - Python: `bin/check_samplesheet.py` (Black line-length 120, isort black profile via `pyproject.toml`) — currently dead code, not invoked anywhere (see Anti-Patterns).
@@ -57,7 +57,7 @@ There is no unit test framework (no nf-test); correctness is checked only by run
 
 - **Never set, request, or hardcode `SYNAPSE_AUTH_TOKEN`.** It is a per-machine credential the user sets themselves via `nextflow secrets set` — treat it as entirely out of scope to touch.
 - **Do not add an upper cap to `manifest.nextflowVersion` or lower the minimum below the `nf-schema` plugin's requirement** without a confirmed reason. `main` previously capped the range (PR #25) because the pre-migration code failed under the strict parser; that cap is obsolete for the migrated code.
-- CI (`.github/workflows/ci.yml`) runs the `NXF_VER` matrix at the declared lower bound, at the version the Seqera Platform instance uses, and at `latest-everything` — check that file for the exact values. A green `latest-everything` run is the evidence that the "no upper cap" claim is still true; if it fails, investigate before you change the manifest.
+- CI (`.github/workflows/ci.yml`) runs the `NXF_VER` matrix at the declared lower bound (25.10.0, the minimum for `nf-schema` 2.7.2) and at `latest-everything` — check that file for the exact values. A green `latest-everything` run is the evidence that the "no upper cap" claim is still true; if it fails, investigate before you change the manifest.
 
 ## Anti-Patterns — Do NOT
 
@@ -70,5 +70,5 @@ There is no unit test framework (no nf-test); correctness is checked only by run
 ## Related Systems
 
 - `ghcr.io/sage-bionetworks-workflows/py-dcqc` — the actual QC engine, a separate repo/container. Every `dcqc <subcommand>` call in `modules/local/*.nf` depends on its CLI contract; coordinate changes there.
-- Sage's Seqera Platform (Tower) instance — the production runner. The CI matrix comment gives `25.04.6` as its Nextflow version, but an earlier note gave a ~25.10.2 client version; confirm the real value and keep `ci.yml` in agreement with it. The instance must be able to download the `nf-schema` plugin.
+- Sage's Seqera Platform (Tower) instance — the production runner. It must run Nextflow 25.10.0 or later, because `nf-schema` 2.7.2 needs that version (an earlier note gave a ~25.10.2 client version; confirm the real value). The instance must be able to download the `nf-schema` plugin.
 - Jira DPE-1808 and GitHub PR #22 ("[DPE-1808] Updated workflow to work with newer versions of Nextflow", branch `DPE-1808`) — the `nf-schema` / strict-parser migration this code is based on. PR #25 ("Cap Nextflow version at 25.10.0", merged to `main`) was the stopgap before this migration; PR #22 replaces that cap with an open-ended range. PR #24 ("Fix linting issues") reverted a draft 2020-12 schema change because the legacy validator could not read it — that reason no longer applies after the migration.

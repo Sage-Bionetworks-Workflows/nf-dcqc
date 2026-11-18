@@ -27,8 +27,10 @@ jobs:
     strategy:
       matrix:
         NXF_VER:
-          - "24.10.0" # Oldest version that works
           - "25.04.6" # Current version used by Sage's Seqera server
+          - "25.10.0" # Oldest version that works (nf-schema 2.7.2 needs >=25.10.0)
+          - "25.10.2"
+          - "26.04.0"
           - "latest-everything"
     steps:
       - name: Check out pipeline code

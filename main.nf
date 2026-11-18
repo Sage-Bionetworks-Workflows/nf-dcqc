@@ -23,7 +23,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { validateParameters; paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-schema'
+include { paramsHelp; validateParameters; paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-schema'
 include { DCQC } from './workflows/dcqc'
 
 //
@@ -49,6 +49,16 @@ workflow SAGE_DCQC {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
+
+    // Fallback for '--help' with no value. The validation.help config block
+    // handles '--help <param>' and '--helpFull', but it sees '--help' alone as
+    // the string 'true' and looks for a param with that name. nf-schema then
+    // writes the error only to the debug log, and the run continues to here.
+    // paramsHelp() gets the command from the validation.help config.
+    if (params.containsKey('help') && params.help) {
+        log.info paramsHelp()
+        exit 0
+    }
 
     // Print workflow version and exit on --version
     if (params.version) {
