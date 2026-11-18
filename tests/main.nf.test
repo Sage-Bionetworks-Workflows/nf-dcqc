@@ -1,0 +1,74 @@
+nextflow_pipeline {
+
+    name "Help flags print the help once and stop the run"
+    script "../main.nf"
+    tag "help"
+
+    // No test sets --input. If a help flag does not stop the run,
+    // validateParameters() fails on the missing input and the test fails.
+    // Thus no QC task can start, and the tests need no container or Synapse token.
+    //
+    // nf-test runs Nextflow with -quiet, so log.info output (the help text)
+    // goes only to nextflow.log, not to stdout. The tests read that log.
+    // nf-test passes params with -params-file, so 'help = true' arrives as a
+    // boolean. This is the same as a Seqera Platform launch.
+
+    test("--help prints the parameter list once and exits") {
+        when {
+            params {
+                help = true
+            }
+        }
+        then {
+            def log = new File("${workDir}/../meta/nextflow.log").text
+            assert workflow.success
+            assert !workflow.stdout.any { it.contains("Validation of pipeline parameters failed") }
+            assert log.count("Typical pipeline command") == 1
+            assert log.contains("--input")
+        }
+    }
+
+    test("--help <param> prints the param detail once and exits") {
+        when {
+            params {
+                help = "input"
+            }
+        }
+        then {
+            def log = new File("${workDir}/../meta/nextflow.log").text
+            assert workflow.success
+            assert !workflow.stdout.any { it.contains("Validation of pipeline parameters failed") }
+            assert log.count("Typical pipeline command") == 1
+            assert log.contains("help_text  :")
+        }
+    }
+
+    test("--helpFull prints the full help once and exits") {
+        when {
+            params {
+                helpFull = true
+            }
+        }
+        then {
+            def log = new File("${workDir}/../meta/nextflow.log").text
+            assert workflow.success
+            assert !workflow.stdout.any { it.contains("Validation of pipeline parameters failed") }
+            assert log.count("Typical pipeline command") == 1
+        }
+    }
+
+    test("--help --showHidden prints the help once and exits") {
+        when {
+            params {
+                help       = true
+                showHidden = true
+            }
+        }
+        then {
+            def log = new File("${workDir}/../meta/nextflow.log").text
+            assert workflow.success
+            assert !workflow.stdout.any { it.contains("Validation of pipeline parameters failed") }
+            assert log.count("Typical pipeline command") == 1
+        }
+    }
+}

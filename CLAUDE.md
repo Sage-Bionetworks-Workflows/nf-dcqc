@@ -36,7 +36,7 @@ editorconfig-checker
 # Black is run via the psf/black@stable GitHub Action, equivalent to: black .
 ```
 
-There is no unit test framework (no nf-test); correctness is checked only by running the `test`/`test_full` profiles end-to-end.
+nf-test (`nf-test.config`, tests in `tests/`) checks only the help flags: each help flag must print the help once and stop the run. These tests set no `--input`, so they need no container or Synapse token. Run them with `nf-test test`. nf-test runs Nextflow with `-quiet`, so `log.info` output is only in `.nf-test/tests/<hash>/meta/nextflow.log`, not in `workflow.stdout`. The QC logic is checked only by running the `test`/`test_full` profiles end-to-end.
 
 ## Data Models
 
