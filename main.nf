@@ -50,16 +50,22 @@ workflow SAGE_DCQC {
 //
 workflow {
 
-    // Fallback for '--help' with no value. The validation.help config block
-    // handles '--help <param>' and '--helpFull', but it sees '--help' alone as
-    // the string 'true' and looks for a param with that name. nf-schema then
-    // writes the error only to the debug log, and the run continues to here.
-    // nf-schema also does not stop the run after '--help <param>', so the check
-    // must accept only true or 'true'. A param name such as 'input' is also
-    // true in Groovy, and would print the full list after the param detail.
-    // paramsHelp() gets the command from the validation.help config.
-    if (params.containsKey('help') && params.help.toString() == 'true') {
-        log.info paramsHelp()
+    // Stop the run after any help flag. nf-schema (the validation.help config
+    // block) prints the help, but it does not stop the run. Without this exit,
+    // the run continues to validateParameters() and can start the pipeline.
+    //
+    // nf-schema prints the help for '--help <param>', '--helpFull', and for
+    // 'help: true' from a params file (Seqera Platform launches use this). It
+    // does not print the help for '--help' alone on the CLI: that value is the
+    // string 'true', and nf-schema looks for a param with that name. Only that
+    // case needs the paramsHelp() fallback. If the fallback also ran for the
+    // boolean true, the help would print twice.
+    // tests/main.nf.test checks all of these cases.
+    def help_flags = ['help', 'helpFull', 'showHidden']
+    if (help_flags.any { params.containsKey(it) && params[it].toString() != 'false' }) {
+        if (params.help instanceof String && params.help == 'true') {
+            log.info paramsHelp()
+        }
         exit 0
     }
 
