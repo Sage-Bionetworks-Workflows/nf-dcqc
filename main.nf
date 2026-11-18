@@ -54,8 +54,11 @@ workflow {
     // handles '--help <param>' and '--helpFull', but it sees '--help' alone as
     // the string 'true' and looks for a param with that name. nf-schema then
     // writes the error only to the debug log, and the run continues to here.
+    // nf-schema also does not stop the run after '--help <param>', so the check
+    // must accept only true or 'true'. A param name such as 'input' is also
+    // true in Groovy, and would print the full list after the param detail.
     // paramsHelp() gets the command from the validation.help config.
-    if (params.containsKey('help') && params.help) {
+    if (params.containsKey('help') && params.help.toString() == 'true') {
         log.info paramsHelp()
         exit 0
     }

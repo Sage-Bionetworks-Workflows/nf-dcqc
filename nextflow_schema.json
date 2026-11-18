@@ -18,8 +18,8 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
+                    "description": "Path to a comma-separated file that lists the Synapse files to check.",
+                    "help_text": "A comma-separated file with a header row. Each row is one file to check. The 'url' column is required and must contain a syn:// Synapse URI. The 'file_type' (one of TXT, TIFF, OME-TIFF, HDF5, TSV, CSV, JSON, JSON-LD, BAM, FASTQ) and 'md5_checksum' columns are optional. More columns are permitted.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "required_tests": {
