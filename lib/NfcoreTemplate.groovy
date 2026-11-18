@@ -126,8 +126,14 @@ class NfcoreTemplate {
             } catch (all) {
                 // Catch failures and try with plaintext
                 def mail_cmd = [ 'mail', '-s', subject, '--content-type=text/html', email_address ]
-                mail_cmd.execute() << email_html
-                log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (mail)-"
+                try {
+                    mail_cmd.execute() << email_html
+                    log.info "-${colors.purple}[$workflow.manifest.name]${colors.green} Sent summary e-mail to $email_address (mail)-"
+                } catch (IOException e) {
+                    // No sendmail and no mail command: log a warning and continue,
+                    // so that the report files are written and onComplete does not stop
+                    log.warn "-${colors.purple}[$workflow.manifest.name]${colors.yellow} Could not send summary e-mail to $email_address: no sendmail or mail command (${e.message})-"
+                }
             }
         }
 
