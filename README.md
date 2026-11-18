@@ -8,15 +8,11 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
+**Sage-Bionetworks-Workflows/nf-dcqc** is a Nextflow pipeline for Data Coordination Quality Control (DCQC). It downloads files from Synapse (imaging, sequencing and tabular data) and runs QC checks on them. It then writes the results of the checks to a copy of the input CSV.
 
-**Sage-Bionetworks-Workflows/nf-dcqc** is a bioinformatics best-practice analysis pipeline for Nextflow Workflow for Data Coordination Quality Control.
+The pipeline is built using [Nextflow](https://www.nextflow.io) DSL2. All QC logic is in the [`py-dcqc`](https://github.com/sage-bionetworks-workflows/py-dcqc) container. This pipeline only runs the `dcqc` command-line tool from that container. All `dcqc` steps use one shared `py-dcqc` container. Each external test runs in the container that `py-dcqc` specifies for that test.
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
-
-<!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.
+Continuous integration (`.github/workflows/ci.yml`) runs the small `test` profile and the nf-test help-flag tests on pull requests and on published releases. The larger `test_full` profile is not run in CI.
 
 ## Pipeline summary
 
@@ -61,9 +57,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=25.10.0`)
 
-   > The pipeline sets a minimum Nextflow version only, with no upper bound (see `manifest.nextflowVersion` in `nextflow.config`). The code works with the strict config parser, which is the default from Nextflow 26.04.0. CI (`.github/workflows/ci.yml`) runs the test profile on the minimum version and on `latest-everything`. The minimum is 25.10.0 because the `nf-schema` 2.7.2 plugin needs it.
+   > The pipeline sets a minimum Nextflow version only, with no upper bound (see `manifest.nextflowVersion` in `nextflow.config`). The code works with the strict config parser, which is the default from Nextflow 26.04.0. CI (`.github/workflows/ci.yml`) runs the test profile and the nf-test tests on the minimum version, on 26.04.0 (the version that Sage's Seqera Platform uses) and on `latest-everything`. The minimum is 25.10.0 because the `nf-schema` 2.7.2 plugin needs it.
 
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
+2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/). The pipeline needs a container engine: the `dcqc` steps have no Conda environment.
 
 3. Add your Synapse token as a nextflow secret
 
@@ -79,18 +75,43 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
-   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter` and `charliecloud` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`. The `conda` and `mamba` profiles are left from the nf-core template. Do not use them: the `dcqc` processes have no Conda environment and need a container.
    > - By default, the pipeline does not download the nf-core institutional configs, so a network problem cannot stop the run at startup. To use an institutional profile from [nf-core/configs](https://github.com/nf-core/configs#documentation), set `--custom_config_base https://raw.githubusercontent.com/nf-core/configs/<version>` (use a tag or commit, not `master`) and then use `-profile <institute>`. If this download fails, the run stops before any task starts.
    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
 5. Start running your own analysis!
 
-   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
    ```bash
-   nextflow run Sage-Bionetworks-Workflows/nf-dcqc --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run Sage-Bionetworks-Workflows/nf-dcqc --input samplesheet.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/institute>
    ```
+
+## Input
+
+The `--input` file is a CSV file with these columns:
+
+| Column         | Required | Description                                                                                                      |
+| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `url`          | Yes      | A Synapse URI, for example `syn://syn41864974`.                                                                  |
+| `file_type`    | No       | The file type, for example `TXT`, `TIFF`, `OME-TIFF`, `HDF5`, `TSV`, `CSV`, `JSON`, `JSON-LD`, `BAM` or `FASTQ`. |
+| `md5_checksum` | No       | The expected MD5 checksum of the file.                                                                           |
+
+The file can have more columns (for example `test`). See `testdata/input_txt.csv` and `testdata/input_full.csv` for examples. At startup, `nf-schema` does a basic check of the file against `assets/schema_input.json`. The `dcqc create-targets` step does the full check of each row.
+
+Use these optional parameters to control which tests decide if a file passes:
+
+- `--required_tests`: a comma-separated list of test names that must pass, for example `LibTiffInfoTest,BioFormatsInfoTest`.
+- `--skipped_tests`: a comma-separated list of test names to skip.
+
+Run `nextflow run Sage-Bionetworks-Workflows/nf-dcqc --help` to see all parameters.
+
+## Output
+
+The pipeline writes these files to `--outdir`:
+
+- `output.csv`: the input CSV, with the QC results added.
+- `suites.json`: the combined test suites for all files.
+- `pipeline_info/`: the Nextflow execution report, timeline, trace and DAG.
 
 ## Special Considerations for Running `nf-dcqc` on Nextflow Tower
 

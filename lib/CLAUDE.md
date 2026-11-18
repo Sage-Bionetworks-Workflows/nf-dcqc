@@ -10,6 +10,7 @@ The remaining nf-core template Groovy helper classes, plus a vendored Joda-Time 
 
 - Do NOT add back `WorkflowMain.groovy` or `NfcoreSchema.groovy`. They were removed in the `nf-schema` migration (commit `5c8b5be`, PR #22). Use the `nf-schema` plugin functions (`validateParameters`, `paramsSummaryLog`, `paramsSummaryMap`) in `main.nf` instead.
 - `email()` and `IM_notification()` take the `summary_params` map produced by `nf-schema`'s `paramsSummaryMap(workflow)`. If you change how that map is built, keep its group → param → value shape.
+- `email()` reads `params.max_multiqc_email_size`, but that param is not declared in `nextflow.config` or `nextflow_schema.json` (the MultiQC params were removed). So `email()` fails when `--email` or `--email_on_fail` is set. Confirm and fix this before you rely on the completion email.
 
 ## Anti-Patterns — Do NOT
 

@@ -13,10 +13,12 @@ take: ch_input            (= file(params.input, checkIfExists: true), from main.
   → PREPARE_TESTS        (subworkflows/local/prepare_tests.nf)
   → INTERNAL_TESTS.mix(EXTERNAL_TESTS)   (grouped by target_id)
   → PREPARE_REPORTS       (subworkflows/local/prepare_reports.nf)
-  → published output.csv
+  → published suites.json and output.csv
 ```
 
 `ch_input` is a single file value, not a channel of rows — there is no samplesheet-check subworkflow before `PREPARE_TESTS`. Full row-level validation happens inside `dcqc create-targets` (called from `PREPARE_TESTS`).
+
+Before `PREPARE_TESTS`, `DCQC` also calls `WorkflowDcqc.initialise()` (an empty stub, see `lib/CLAUDE.md`) and checks again that `params.input` exists. `main.nf` already does that check. `ch_versions` is created but never used.
 
 ## Conventions
 
