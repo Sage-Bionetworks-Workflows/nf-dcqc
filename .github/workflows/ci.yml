@@ -28,8 +28,7 @@ jobs:
       matrix:
         NXF_VER:
           - "25.10.0" # Oldest version that works (nf-schema 2.7.2 needs >=25.10.0)
-          - "25.10.2"
-          - "26.04.0"
+          - "26.04.0" # Seqera version
           - "latest-everything"
     steps:
       - name: Check out pipeline code
