@@ -1,0 +1,40 @@
+nextflow_pipeline {
+
+    name "The completion email handler runs without errors"
+    script "../main.nf"
+    tag "email"
+
+    // This test sets no profile, so no container is used. The first QC task
+    // fails because dcqc is not on PATH, and the run fails. That is expected:
+    // Nextflow still runs the workflow.onComplete handler, which calls
+    // NfcoreTemplate.email() when --email is set. The test checks only that
+    // this handler does not fail on code errors.
+    //
+    // The samplesheet has a fake Synapse URL, so no real download can start
+    // on a machine that has dcqc on PATH and a Synapse token.
+    //
+    // The test does not check that the email is sent. Most machines (and the
+    // GitHub runners) have no sendmail or mail command, so the send step can
+    // fail for reasons that are not in the pipeline code.
+    //
+    // nf-test runs Nextflow with -quiet, so the onComplete errors go only to
+    // nextflow.log. The test reads that log.
+
+    test("--email: onComplete does not fail with a NullPointerException") {
+        when {
+            params {
+                input  = "${projectDir}/tests/data/email_samplesheet.csv"
+                email  = "test@example.com"
+                outdir = "${outputDir}/results"
+            }
+        }
+        then {
+            def logFile = new File("${workDir}/../meta/nextflow.log")
+            def lines   = logFile.readLines()
+            def npe     = lines.findAll { it.contains("NullPointerException") }
+            def undef   = lines.findAll { it.contains("Access to undefined parameter") }
+            assert npe.isEmpty()   : "onComplete failed: ${npe} (see ${logFile})"
+            assert undef.isEmpty() : "Undefined params used: ${undef} (see ${logFile})"
+        }
+    }
+}

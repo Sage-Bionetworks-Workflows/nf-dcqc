@@ -106,13 +106,12 @@ workflow {
 
     // Info required for completion email and summary
     summary_params = paramsSummaryMap(workflow)
-    def multiqc_report = []
 
     SAGE_DCQC (ch_input)
 
     workflow.onComplete = {
         if (params.email || params.email_on_fail) {
-            NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+            NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
         }
         NfcoreTemplate.summary(workflow, params, log)
         if (params.hook_url) {
