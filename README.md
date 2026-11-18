@@ -105,6 +105,29 @@ Use these optional parameters to control which tests decide if a file passes:
 
 Run `nextflow run Sage-Bionetworks-Workflows/nf-dcqc --help` to see all parameters.
 
+## Resource limits
+
+The `--max_cpus`, `--max_memory` and `--max_time` parameters set the maximum resources that one task can use (defaults: `16`, `128.GB` and `240.h`). The pipeline gives these values to `process.resourceLimits` in `conf/base.config`. Nextflow reads them when it parses `conf/base.config`, before it reads profiles and custom config files.
+
+Thus, only these methods change the limits:
+
+- A command-line flag, for example `--max_cpus 4 --max_memory 16.GB`.
+- A params file, for example `-params-file params.yml`. On Seqera Platform (Tower), use the "Pipeline parameters" field.
+
+If you set `params.max_cpus`, `params.max_memory` or `params.max_time` in a config file (a profile, a `-c custom.config` file, or the Seqera Platform "Nextflow config file" field), the limits do not change. The parameter summary at startup shows the new values, but the tasks continue to use the old limits. In a config file, set `process.resourceLimits` directly:
+
+```groovy
+process {
+    resourceLimits = [
+        cpus  : 4,
+        memory: '16.GB',
+        time  : '12.h'
+    ]
+}
+```
+
+For the same reason, `conf/test.config` sets `process.resourceLimits` directly. It also sets the `max_*` params to the same values, so that the parameter summary shows the correct values.
+
 ## Output
 
 The pipeline writes these files to `--outdir`:
