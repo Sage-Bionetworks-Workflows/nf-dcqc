@@ -1,22 +1,22 @@
 {
-  "ui": {},
-  "form": {
-    "title": "Data Curator QC (DCQC)",
-    "description": "Runs DCQC checks against files listed in a samplesheet CSV of Synapse URIs (columns: url, file_type, md5_checksum, optional test). Select a dataset containing exactly one samplesheet CSV as the input.",
-    "type": "object",
-    "properties": {
-      "required_tests": {
-        "title": "Required tests",
-        "description": "Comma-separated list of tests that are required for a file to pass QC (e.g. Md5ChecksumTest,FileExtensionTest). Leave blank to use the dcqc defaults.",
-        "type": "string",
-        "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
-      },
-      "skipped_tests": {
-        "title": "Skipped tests",
-        "description": "Comma-separated list of tests that should be skipped for all files. Leave blank to use the dcqc defaults.",
-        "type": "string",
-        "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
-      }
+    "ui": {},
+    "form": {
+        "title": "Data Curator QC (DCQC)",
+        "description": "Runs DCQC checks against files listed in a samplesheet CSV of Synapse URIs (columns: url, file_type, md5_checksum, optional test). Select a dataset containing exactly one samplesheet CSV as the input.",
+        "type": "object",
+        "properties": {
+            "required_tests": {
+                "title": "Required tests",
+                "description": "Comma-separated list of tests that are required for a file to pass QC (e.g. Md5ChecksumTest,FileExtensionTest). Leave blank to use the dcqc defaults.",
+                "type": "string",
+                "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
+            },
+            "skipped_tests": {
+                "title": "Skipped tests",
+                "description": "Comma-separated list of tests that should be skipped for all files. Leave blank to use the dcqc defaults.",
+                "type": "string",
+                "pattern": "^([A-z0-9]+,)*[A-z0-9]+$"
+            }
+        }
     }
-  }
 }

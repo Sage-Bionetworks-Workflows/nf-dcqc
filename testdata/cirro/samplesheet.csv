@@ -1,0 +1,5 @@
+url,file_type,md5_checksum,test
+hello.txt,TXT,7e9c7ab96720627af5c733208e0d7360,good_txt
+example.json,JSON,474db604dfde843da5193708aa2ae574,good_json
+example.csv,CSV,e5ebd4c02cefbe7955977c67ada242b7,good_csv
+hello.txt,TXT,not_the_right_md5,bad_md5_txt
