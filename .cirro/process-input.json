@@ -1,0 +1,5 @@
+{
+    "outdir": "$.params.dataset.s3|/data/",
+    "required_tests": "$.params.dataset.paramJson.required_tests",
+    "skipped_tests": "$.params.dataset.paramJson.skipped_tests"
+}
