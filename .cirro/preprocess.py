@@ -26,9 +26,12 @@ def is_samplesheet(path, logger):
 def main():
     ds = PreprocessDataset.from_running()
     ds.logger.info(f"Starting params: {ds.params}")
-    ds.logger.info(f"Input files:\n{ds.files}")
+    # ds.files only lists files Cirro has linked to a sample; input_files() lists every
+    # (non-empty) file in the input datasets, which is what a plain upload needs
+    input_files = ds.input_files()
+    ds.logger.info(f"Input files:\n{input_files.to_string()}")
 
-    files = [str(f) for f in ds.files["file"].unique()]
+    files = [str(f) for f in input_files["file"].unique()]
     candidates = [f for f in files if f.lower().endswith(".csv")]
     samplesheets = [f for f in candidates if is_samplesheet(f, ds.logger)]
     if len(samplesheets) != 1:
